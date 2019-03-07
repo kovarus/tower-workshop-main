@@ -10,8 +10,10 @@
         filters:
           tag:Name: "{{ fqdn }}"
         state: absent
+        region: us-west-2
 
     - name: Remove EC2 SG
       ec2_group:
         name: "{{ fqdn }}-sg"
         state: absent
+        region: us-west-2

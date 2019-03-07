@@ -9,6 +9,7 @@
         name: "{{ fqdn }}-sg"
         description: SG for Box Demo
         vpc_id: "{{ ec2_vpc_id }}"
+        region: us-west-2
         rules:
           - proto: tcp
             ports:
