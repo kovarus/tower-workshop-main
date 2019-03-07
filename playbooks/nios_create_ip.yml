@@ -27,4 +27,4 @@
     - name: "Pass IP to next step"
       set_stats:
         data:
-          new_ip: host.ipv4addrs[0].ipv4addr
+          new_ip: "{{ host.ipv4addrs[0].ipv4addr }}"
