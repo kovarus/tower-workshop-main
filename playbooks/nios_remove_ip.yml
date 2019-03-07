@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: "Get host record for {{ fqdn }}"
+      set_fact:
+        host: "{{ lookup('nios', 'record:host', filter={'name': fqdn}, provider=nios_provider) }}"
+
+    - name: "Remove host record for {{ fqdn }}"
+      nios_host_record:
+        name: "{{ fqdn }}"
+        state: absent
+        provider: "{{nios_provider}}"
+      when: host._ref is defined

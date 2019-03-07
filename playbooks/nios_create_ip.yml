@@ -1,0 +1,25 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: "Get host record for {{ fqdn }}"
+      set_fact:
+        host: "{{ lookup('nios', 'record:host', filter={'name': fqdn}, provider=nios_provider) }}"
+
+    - name: "Create host record for {{ fqdn }}"
+      nios_host_record:
+        name: "{{ fqdn }}"
+        ipv4addrs:
+          - ipv4addr:
+              "{{ lookup('nios_next_ip', '172.16.60.0/24', provider=nios_provider)[0] }}"
+        state: present
+        provider: "{{nios_provider}}"
+      when: host._ref is not defined
+
+    - name: "Get host record for {{ fqdn }}"
+      set_fact:
+        host: "{{ lookup('nios', 'record:host', filter={'name': fqdn}, provider=nios_provider) }}"
+
+    - name: "Output the IP of {{ fqdn }}"
+      debug:
+        var: host.ipv4addrs[0].ipv4addr
