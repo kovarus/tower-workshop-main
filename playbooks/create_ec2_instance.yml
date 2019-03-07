@@ -1,0 +1,8 @@
+---
+- name: Create EC2 Instance
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - debug:
+        msg: "Create EC2 Instance with hostname {{ fqdn }} and IP {{ new_ip }}"
