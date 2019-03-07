@@ -32,6 +32,7 @@
       ec2_instance:
         key_name: towen_kpsc
         instance_type: t3.micro
+        region: us-west-2
         image_id: ami-01ed306a12b7d1c96
         wait: yes
         wait_timeout: 500
