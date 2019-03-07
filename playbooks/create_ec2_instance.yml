@@ -4,5 +4,61 @@
   connection: local
   gather_facts: no
   tasks:
+    - name: Create EC2 SG
+      ec2_group:
+        name: "{{ fqdn }}-sg"
+        description: SG for Box Demo
+        vpc_id: "{{ ec2_vpc_id }}"
+        rules:
+          - proto: tcp
+            ports:
+              - 22
+            cidr_ip: 0.0.0.0/0
+            rule_desc: Allow ALL to SSH
+
+    - name: Create EC2 interface
+      ec2_eni:
+        description: "EC2 Interface"
+        device_index: 0
+        security_groups:
+          - "{{ fqdn }}-sg"
+        subnet_id: "{{ ec2_subnet_id }}"
+        private_ip_address: "{{ new_ip }}"
+        region: us-west-2
+      register: eni_eth0
+
+    - name: Create EC2 instance
+      ec2_instance:
+        key_name: towen_kpsc
+        instance_type: t3.micro
+        image_id: ami-01ed306a12b7d1c96
+        wait: yes
+        wait_timeout: 500
+        volumes:
+          - device_name: /dev/sda1
+            ebs:
+              volume_type: gp2
+              volume_size: 20
+        name: "{{ fqdn }}"
+        tags:
+          Workshop: BOXWORKSHOP
+        network:
+          interfaces:
+              - "{{ eni_eth0.interface.id }}"
+
+    - name: Set EC2 interface to delete on terminate
+      ec2_eni:
+        delete_on_termination: true
+        eni_id: "{{ eni_eth0.interface.id }}"
+        region: us-west-2
+
+    - name: Allocate EIP for EC2 eth0
+      ec2_eip:
+        device_id: "{{ eni_eth0.interface.id }}"
+        in_vpc: true
+        region: us-west-2
+        release_on_disassociation: true
+      register: ec2_eip
+
     - debug:
-        msg: "Create EC2 Instance with hostname {{ fqdn }} and IP {{ new_ip }}"
+        msg: "EC2 Instance Public IP is {{ ec2_eip.public_ip }}"

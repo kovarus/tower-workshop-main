@@ -1,0 +1,17 @@
+---
+- name: Deprovision Infoblox
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Remove EC2 instance
+      ec2_instance:
+        name: "{{ fqdn }}"
+        filters:
+          tag:Name: "{{ fqdn }}"
+        state: absent
+
+    - name: Remove EC2 SG
+      ec2_group:
+        name: "{{ fqdn }}-sg"
+        state: absent
