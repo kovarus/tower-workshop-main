@@ -1,12 +1,12 @@
 ---
-- name: Configure port on Router
+- name: Configure VLAN on Router
   hosts: routers
   connection: network_cli
   gather_facts: no
 
   tasks:
-    - name: Configure port on router
+    - name: Configure VLAN on router
       ios_vlan:
         vlan_id: "{{ vlan_id }}"
         name: "{{ vlan_name }}"
-        present:
+        state: present
