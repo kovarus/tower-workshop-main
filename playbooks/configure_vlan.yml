@@ -4,7 +4,7 @@
   connection: network_cli
   gather_facts: no
 
-  task:
+  tasks:
     - name: Configure port on router
       ios_vlan:
         vlan_id: "{{ vlan_id }}"
