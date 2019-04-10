@@ -1,0 +1,23 @@
+---
+- name: Configure SNMP on Router
+  hosts: routers
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - name: GATHER ROUTER FACTS
+      ios_facts:
+
+    - name: Configure SNMP on router
+      ios_config:
+        commands:
+          - "snmp-server community {{ snmp_string }} {{ snmp_permissions }}"
+
+    - name: Update Jira Ticket
+      jira:
+        uri: "{{ jira_server }}"
+        username: "{{ jira_user }}"
+        password: "{{ jira_pass }}"
+        issue: "{{ ticket_id }}"
+        operation: transition
+        status: Done
