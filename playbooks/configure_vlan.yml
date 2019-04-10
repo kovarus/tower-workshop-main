@@ -5,6 +5,9 @@
   gather_facts: no
 
   tasks:
+    - name: GATHER ROUTER FACTS
+      ios_facts:
+
     - name: Configure VLAN on router
       ios_vlan:
         vlan_id: "{{ vlan_id }}"
